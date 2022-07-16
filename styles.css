@@ -1,0 +1,197 @@
+*, *::after, *::before {
+    box-sizing: border-box;
+}
+  
+:root {
+    --cell-size: 100px;
+    --mark-size: calc(var(--cell-size) * .9);
+}
+
+body {
+    margin: 0;
+}
+
+.board {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    justify-items: center;
+    align-items: center;
+    grid-template-columns: repeat(3, auto)
+}
+
+
+/* 九小格 */
+.cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+}
+
+/* 刪除最外正方形 */
+/* 最上一橫 */
+.cell:first-child,
+.cell:nth-child(2),
+.cell:nth-child(3) {
+    border-top: none;
+}
+
+/* 左 */
+.cell:nth-child(3n + 1) {
+    border-left: none;
+}
+
+/* 右 */
+.cell:nth-child(3n + 3) {
+    border-right: none;
+}
+
+/* 下 */
+.cell:last-child,
+.cell:nth-child(8),
+.cell:nth-child(7) {
+    border-bottom: none;
+}
+
+.cell.x00::before,
+.cell.x00::after,
+.cell.x11::before,
+.cell.x11::after,
+.cell.x22::before,
+.cell.x22::after,
+.cell.circle00::before,
+.cell.circle11::before,
+.cell.circle22::before {
+    background-color: black;
+}
+
+
+/* 畫X */
+/* 
+    .board.x .cell:not(.x):not(.circle):hover::before,
+    .board.x .cell:not(.x):not(.circle):hover::after
+    滑鼠放在格子上時之background OX，not(.x):not(.circle): 在有OX時不出現
+*/
+
+.cell.x00::before,
+.cell.x00::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--mark-size) * .05);
+    height: calc(var(--mark-size)* .5);
+}
+
+.cell.x11::before,
+.cell.x11::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--mark-size) * .10);
+    height: calc(var(--mark-size)* .75);
+}
+
+.cell.x22::before,
+.cell.x22::after {
+    content: '';
+    position: absolute;
+    width: calc(var(--mark-size) * .15);
+    height: var(--mark-size);
+}
+
+
+.cell.x00::before,
+.cell.x11::before,
+.cell.x22::before {
+    transform: rotate(45deg);
+}
+
+.cell.x00::after,
+.cell.x11::after,
+.cell.x22::after {
+    transform: rotate(-45deg);
+}
+/*  */
+
+/* 用白色圓蓋住黑色圓 */
+.cell.circle00::before,
+.cell.circle11::before,
+.cell.circle22::before,
+.cell.circle00::after,
+.cell.circle11::after,
+.cell.circle22::after{
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+}
+
+.cell.circle00::before {
+    width: calc(var(--mark-size) * .5);
+    height: calc(var(--mark-size) * .5);
+}
+.cell.circle11::before {
+    width: calc(var(--mark-size) * .75);
+    height: calc(var(--mark-size) * .75);
+}
+.cell.circle22::before {
+    width: var(--mark-size);
+    height: var(--mark-size);
+}
+
+.cell.circle00::after {
+    width: calc(var(--mark-size) * .4);
+    height: calc(var(--mark-size) * .4);
+    background-color: white;
+}
+.cell.circle11::after {
+    width: calc(var(--mark-size) * .55);
+    height: calc(var(--mark-size) * .55);
+    background-color: white;
+}
+.cell.circle22::after {
+    width: calc(var(--mark-size) * .7);
+    height: calc(var(--mark-size) * .7);
+    background-color: white;
+}
+/*  */
+
+
+
+
+.winning-message {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, .9);
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 5rem;
+    flex-direction: column;
+}
+
+.winning-message button {
+    font-size: 3rem;
+    background-color: white;
+    border: 1px solid black;
+    padding: .25em .5em;
+    cursor: pointer;
+}
+
+.winning-message button:hover {
+    background-color: black;
+    color: white;
+    border-color: white;
+}
+
+.winning-message.show {
+    display: flex;
+}
