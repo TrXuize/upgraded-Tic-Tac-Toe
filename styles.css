@@ -60,15 +60,15 @@ body {
     border-bottom: none;
 }
 
-.cell.x00::before,
-.cell.x00::after,
-.cell.x11::before,
-.cell.x11::after,
-.cell.x22::before,
-.cell.x22::after,
-.cell.circle00::before,
-.cell.circle11::before,
-.cell.circle22::before {
+.cell.x0::before,
+.cell.x0::after,
+.cell.x1::before,
+.cell.x1::after,
+.cell.x2::before,
+.cell.x2::after,
+.cell.circle0::before,
+.cell.circle1::before,
+.cell.circle2::before {
     background-color: black;
 }
 
@@ -80,24 +80,24 @@ body {
     滑鼠放在格子上時之background OX，not(.x):not(.circle): 在有OX時不出現
 */
 
-.cell.x00::before,
-.cell.x00::after {
+.cell.x0::before,
+.cell.x0::after {
     content: '';
     position: absolute;
     width: calc(var(--mark-size) * .05);
     height: calc(var(--mark-size)* .5);
 }
 
-.cell.x11::before,
-.cell.x11::after {
+.cell.x1::before,
+.cell.x1::after {
     content: '';
     position: absolute;
     width: calc(var(--mark-size) * .10);
     height: calc(var(--mark-size)* .75);
 }
 
-.cell.x22::before,
-.cell.x22::after {
+.cell.x2::before,
+.cell.x2::after {
     content: '';
     position: absolute;
     width: calc(var(--mark-size) * .15);
@@ -105,55 +105,55 @@ body {
 }
 
 
-.cell.x00::before,
-.cell.x11::before,
-.cell.x22::before {
+.cell.x0::before,
+.cell.x1::before,
+.cell.x2::before {
     transform: rotate(45deg);
 }
 
-.cell.x00::after,
-.cell.x11::after,
-.cell.x22::after {
+.cell.x0::after,
+.cell.x1::after,
+.cell.x2::after {
     transform: rotate(-45deg);
 }
 /*  */
 
 /* 用白色圓蓋住黑色圓 */
-.cell.circle00::before,
-.cell.circle11::before,
-.cell.circle22::before,
-.cell.circle00::after,
-.cell.circle11::after,
-.cell.circle22::after{
+.cell.circle0::before,
+.cell.circle1::before,
+.cell.circle2::before,
+.cell.circle0::after,
+.cell.circle1::after,
+.cell.circle2::after{
     content: '';
     position: absolute;
     border-radius: 50%;
 }
 
-.cell.circle00::before {
+.cell.circle0::before {
     width: calc(var(--mark-size) * .5);
     height: calc(var(--mark-size) * .5);
 }
-.cell.circle11::before {
+.cell.circle1::before {
     width: calc(var(--mark-size) * .75);
     height: calc(var(--mark-size) * .75);
 }
-.cell.circle22::before {
+.cell.circle2::before {
     width: var(--mark-size);
     height: var(--mark-size);
 }
 
-.cell.circle00::after {
+.cell.circle0::after {
     width: calc(var(--mark-size) * .4);
     height: calc(var(--mark-size) * .4);
     background-color: white;
 }
-.cell.circle11::after {
+.cell.circle1::after {
     width: calc(var(--mark-size) * .55);
     height: calc(var(--mark-size) * .55);
     background-color: white;
 }
-.cell.circle22::after {
+.cell.circle2::after {
     width: calc(var(--mark-size) * .7);
     height: calc(var(--mark-size) * .7);
     background-color: white;
