@@ -16,7 +16,7 @@ const WINNING_COMBINATIONS = [
 
 /*
     加alpha-beta  https://www.youtube.com/watch?v=LKhmyl4etnE&ab_channel=%E5%AE%89%E5%AE%89%E9%82%8A%E7%B7%A3%E5%AD%90
-    minimax win不了會卡住
+    
 */
 var index = { 0: 'small', 1: 'medium', 2: 'large' }
 const button1 = document.getElementById('small')
@@ -53,7 +53,6 @@ function startGame() {
     cell.removeEventListener('click', handleClick)
     cell.addEventListener('click', handleClick)
   })
-  //setBoardHoverClass()
   winningMessageElement.classList.remove('show')
 }
 
@@ -63,7 +62,6 @@ var element_old = 0  // 點選格子原OX之value: cell x0
 function handleClick(e) {
   const cell = e.target // 點到的格子
   const currentClass = circleTurn ? CIRCLE_CLASS[element_size] : X_CLASS[element_size]
-
   // cell.classList.value: 該格前一value (cell x0)     .at(-1)
   // 刪原cell class 再新增(大的才可取代小的)
   element_old = cell.classList.value
@@ -74,24 +72,41 @@ function handleClick(e) {
 
   let B = { 'x': button_count_x[element_size], 'c': button_count_c[element_size] }
   // 相同不可再按
-  console.log(cellElements)
   if (!ListsAreEqual(cellElements, cellElements_old)) {
     // 比較OX大小 l為還沒按過
     if ((element_size > element_old.at(-1)) || (element_old.at(-1) == 'l') && (B[currentClass[0]] > 0)) {
-      // switch 顯示
-      if (currentClass[0] == 'c') { document.getElementById('turn').textContent = 'Turn: X' }
-      else { document.getElementById('turn').textContent = 'Turn: Circle' }
       // 顯示button剩餘次數, disable
       element_size_old = element_size
       button_check(currentClass, element_size_old)
-
       // copy list
       for (let i = 0; i < cellElements.length; i++) { cellElements_old[i] = cellElements[i].classList.value; }
 
-      if (checkWin(currentClass)) { endGame(false) }
+      if (checkWin(currentClass)) { endGame(false)}
       else if (isDraw()) { endGame(true) }
       else { swapTurns() }
+
+      // ai move  ----------------
+      if(!(checkWin(currentClass)|| isDraw())){
+        result = bestMove()
+        let cellNameOld = cellElements[result[0]].classList.value
+        let sizeOld = cellElements[result[0]].classList.value.at(-1)
+
+        if(cellNameOld!='cell'){
+          if(cellNameOld[5]=='c'){cellElements[result[0]].classList.remove('circle'+sizeOld)}
+          else{cellElements[result[0]].classList.remove('x'+sizeOld)}
+        }
+
+        cellElements[result[0]].classList.add('circle'+result[1])
+        button_count_c[result[1]] -= 1
+        circleTurn = true
+        if (checkWin('c')) { endGame(false) }
+        else if (isDraw()) { endGame(true) }
+        else { swapTurns() }
+      }
+      //---------------------
     }
+    
+    
     else {
       cell.classList.remove(currentClass)
       if (element_old.at(5) == 'x' && element_old.at(-1) != 'l')
@@ -101,27 +116,6 @@ function handleClick(e) {
       console.log('not allowed')
     }
 
-    // ai move
-    result = bestMove()
-    // place mark
-    console.log('new move '+ result[0])
-    console.log('circle'+result[1])
-    // 刪原本的在家
-    let cellNameOld = cellElements[result[0]].classList.value
-    let sizeOld = cellElements[result[0]].classList.value.at(-1)
-
-    if(cellNameOld!='cell'){
-      if(cellNameOld[5]=='c'){cellElements[result[0]].classList.remove('circle'+sizeOld)}
-      else{cellElements[result[0]].classList.remove('x'+sizeOld)}
-    }
-
-    cellElements[result[0]].classList.add('circle'+result[1])
-    button_count_c[result[1]] -= 1
-    console.log(cellElements)
-    circleTurn = true
-    if (checkWin('c')) { endGame(false) }
-    else if (isDraw()) { endGame(true) }
-    else { swapTurns() }
     
   }
 }
@@ -152,11 +146,7 @@ function bestMove() {
     for (let j = 2; j > -1; j--) {
       let classname = 0
       // 可蓋掉時 刪除原棋子
-      size = j
-      console.log('button_count '+button_count_c[j]+' j: '+j)
       if ((button_count_c[j] > 0) && (j > cellElements[i].classList.value.at(-1) || cellElements[i].classList.value == 'cell')) {
-        console.log(i)
-        console.log(j)
         if (cellElements[i].classList.value != 'cell') {
           classname = getClassname(cellElements[i].classList.value[5], cellElements[i].classList.value.at(-1))
           cellElements[i].classList.remove(classname)
@@ -175,16 +165,14 @@ function bestMove() {
         if (score > bestScore) {
           bestScore = score
           Move = i // 該格
+          size = j
         }
-        console.log('move1 ' +Move)
         if (bestScore == 1) {
           return [Move, size]
         }
       }
     }
   }
-  console.log(cellElements)
-  console.log('move2 ' +Move)
   return [Move, size]
 }
 
@@ -201,7 +189,7 @@ function minimax(depth, isMaximizing) {
   // Draw score = 0
   else if (isDraw()) { return 0 }
 
-  if (depth > 4) {
+  if (depth > 5){
     return 0
   }
 
@@ -210,7 +198,6 @@ function minimax(depth, isMaximizing) {
     for (let i = 0; i < cellElements.length; i++) {
       for (var j = 0; j < 3; j++) {
         if ((button_count_c[j] > 0) && (j > cellElements[i].classList.value.at(-1) || cellElements[i].classList.value == 'cell')) {
-          console.log('button count c  '+button_count_c[j])
           let classname = 0
           if (cellElements[i].classList.value != 'cell') {
             classname = getClassname(cellElements[i].classList.value[5], cellElements[i].classList.value.at(-1))
@@ -231,7 +218,6 @@ function minimax(depth, isMaximizing) {
           if (score > bestScore) {
             bestScore = score
           }
-          console.log('bestsocre c '+bestScore)
           if (bestScore == 1) {
             return bestScore
           }
@@ -264,9 +250,7 @@ function minimax(depth, isMaximizing) {
           if (score < bestScore) {
             bestScore = score
           }
-          console.log('bestsocre x '+bestScore)
           if (bestScore == -1) { 
-            console.log('x return')
             return bestScore }
         }
       }
@@ -377,8 +361,8 @@ function button_check(currentClass, element_size_old) {
     button_count_x[element_size] -= 1
 
     for (var i = 0; i < 3; i++) {
-      document.getElementById(index[i]).innerHTML = index[i] + ': ' + button_count_c[i]
-      if (button_count_c[i] == 0) {
+      document.getElementById(index[i]).innerHTML = index[i] + ': ' + button_count_x[i]
+      if (button_count_x[i] == 0) {
         if (i == 0)
           button1.disabled = true
         else if (i == 1)
